@@ -57,11 +57,11 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
                 <MapPin className="text-blue-500 shrink-0" size={20} />
-                <span>123 Tech Avenue, Silicon Valley, CA</span>
+                <span>Jodhpur, Rajasthan, India — Multiple Locations</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="text-blue-500 shrink-0" size={20} />
-                <span>+1 (555) 000-0000</span>
+                <span>+91 (759) 764-5334</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="text-blue-500 shrink-0" size={20} />
