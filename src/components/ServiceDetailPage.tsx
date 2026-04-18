@@ -33,28 +33,32 @@ export default function ServiceDetailPage() {
       /* ---------- ENTRANCE TIMELINE ---------- */
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.from('.hero-back-btn', { y: -20, opacity: 0, duration: 0.5 })
-        .from('.hero-tag', { y: 20, opacity: 0, duration: 0.5 }, '-=0.2')
-        .from('.hero-title', { y: 40, opacity: 0, duration: 0.8 }, '-=0.3')
-        .from('.hero-desc', { y: 25, opacity: 0, duration: 0.7 }, '-=0.5')
-        .from(
+      tl.fromTo('.hero-back-btn', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 })
+        .fromTo('.hero-tag', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, '-=0.2')
+        .fromTo('.hero-title', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, '-=0.3')
+        .fromTo('.hero-desc', { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.5')
+        .fromTo(
           '.hero-feature-pill',
-          { y: 20, opacity: 0, scale: 0.9, duration: 0.5, stagger: 0.08 },
+          { y: 20, opacity: 0, scale: 0.9 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.08 },
           '-=0.4',
         )
-        .from(
+        .fromTo(
           '.hero-card',
-          { x: 60, opacity: 0, scale: 0.9, duration: 0.9, ease: 'power4.out' },
+          { x: 60, opacity: 0, scale: 0.9 },
+          { x: 0, opacity: 1, scale: 1, duration: 0.9, ease: 'power4.out' },
           '-=0.9',
         )
-        .from(
+        .fromTo(
           '.hero-card-row',
-          { y: 20, opacity: 0, duration: 0.5, stagger: 0.15 },
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, stagger: 0.15 },
           '-=0.5',
         )
-        .from(
+        .fromTo(
           '.hero-icon-wrap',
-          { scale: 0, rotation: -180, opacity: 0, duration: 0.9, ease: 'back.out(1.7)' },
+          { scale: 0, rotation: -180, opacity: 0 },
+          { scale: 1, rotation: 0, opacity: 1, duration: 0.9, ease: 'back.out(1.7)' },
           '-=0.7',
         );
 
@@ -179,57 +183,8 @@ export default function ServiceDetailPage() {
       }
     }, heroRef);
 
-    /* ---------- OPTION B (HIGHLIGHTED) PRICING CARD ANIMATIONS ---------- */
-    const pricingCtx = gsap.context(() => {
-      // Floating blobs (Hero style)
-      gsap.to('.opt-b-blob-1', {
-        x: 20,
-        y: 15,
-        scale: 1.1,
-        duration: 4,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-      });
-      gsap.to('.opt-b-blob-2', {
-        x: -20,
-        y: -15,
-        scale: 1.1,
-        duration: 5,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-      });
-
-      // Floating sparkles (Hero style)
-      gsap.utils.toArray<HTMLElement>('.opt-b-spark').forEach((el, i) => {
-        gsap.to(el, {
-          y: '-=15',
-          opacity: 0.2,
-          duration: 2 + Math.random() * 2,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-          delay: i * 0.3,
-        });
-      });
-
-      // Card entrance
-      if (document.querySelector('.option-b-card')) {
-        gsap.from('.option-b-card', {
-          scale: 0.9,
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: 'power3.out',
-          delay: 0.2,
-        });
-      }
-    });
-
     return () => {
       ctx.revert();
-      pricingCtx.revert();
     };
   }, [service]);
 
@@ -286,14 +241,12 @@ export default function ServiceDetailPage() {
 
           <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <div className="hero-tag mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white/80 backdrop-blur-md">
+              <div className="hero-tag mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white">
                 <Rocket size={15} className="text-blue-300" />
                 Premium Service Details
               </div>
-              <h1 className="hero-title mb-6 text-4xl font-extrabold leading-tight md:text-6xl">
-                <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
-                  {service.title}
-                </span>
+              <h1 className="hero-title mb-6 text-4xl font-extrabold leading-tight text-white md:text-6xl">
+                {service.title}
               </h1>
               <p className="hero-desc max-w-3xl text-base leading-8 text-slate-300 md:text-lg">
                 {service.heroDescription}
@@ -303,7 +256,7 @@ export default function ServiceDetailPage() {
                 {service.features.map((feature) => (
                   <span
                     key={feature}
-                    className="hero-feature-pill rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white/85 backdrop-blur-md transition hover:border-blue-300/40 hover:bg-white/15"
+                    className="hero-feature-pill rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                   >
                     {feature}
                   </span>
@@ -489,105 +442,51 @@ export default function ServiceDetailPage() {
             {service.pricing.map((plan) => (
               <div
                 key={plan.name}
-                className={`pricing-card relative flex flex-col rounded-3xl border-2 p-6 md:p-8 transition-all duration-500 ${
+                className={`relative flex flex-col rounded-3xl border p-6 md:p-8 transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl ${
                   plan.highlighted
-                    ? 'option-b-card z-10 overflow-hidden border-white/10 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white shadow-2xl shadow-blue-900/40 lg:-mt-4 lg:scale-105 hover:lg:scale-110'
-                    : 'border-slate-200 bg-white text-slate-900 shadow-sm hover:-translate-y-2 hover:shadow-2xl'
+                    ? 'z-10 border-blue-600 bg-white text-slate-900 shadow-xl shadow-blue-600/10 lg:-mt-4 lg:scale-105'
+                    : 'border-slate-200 bg-white text-slate-900 shadow-sm'
                 }`}
               >
-                {/* ===== HERO-STYLE GRAPHICS FOR OPTION B ===== */}
                 {plan.highlighted && (
-                  <>
-                    {/* Background Blobs */}
-                    <div className="pointer-events-none absolute inset-0 -z-10">
-                      <div className="opt-b-blob-1 absolute -left-10 -top-10 h-40 w-40 rounded-full bg-blue-500/30 blur-3xl" />
-                      <div className="opt-b-blob-2 absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-purple-500/30 blur-3xl" />
-                    </div>
-
-                    {/* Decorative SVG grid */}
-                    <svg
-                      className="pointer-events-none absolute inset-0 -z-10 h-full w-full stroke-white/[0.06] [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"
-                      aria-hidden="true"
-                    >
-                      <rect width="100%" height="100%" fill="url(#hero-grid)" />
-                    </svg>
-
-                    {/* Floating sparkles */}
-                    <div className="pointer-events-none absolute inset-0 -z-10">
-                      <Sparkles className="opt-b-spark absolute left-[15%] top-[15%] text-blue-300/60" size={14} />
-                      <Star className="opt-b-spark absolute right-[20%] top-[30%] text-purple-300/60" size={10} />
-                      <Zap className="opt-b-spark absolute left-[25%] bottom-[20%] text-yellow-300/60" size={12} />
-                      <Sparkles className="opt-b-spark absolute right-[15%] bottom-[30%] text-cyan-300/60" size={14} />
-                    </div>
-                  </>
-                )}
-
-                {/* Badge */}
-                {plan.highlighted && (
-                  <div className="absolute -top-5 left-1/2 z-20 -translate-x-1/2">
-                    <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md shadow-xl">
-                      <Rocket size={14} className="text-blue-300" />
+                  <div className="mb-6 self-start">
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-blue-700">
+                      <Rocket size={14} className="text-blue-600" />
                       Most Popular
                     </div>
                   </div>
                 )}
 
                 <div className="relative z-10 mb-6">
-                  <h3
-                    className={`mb-2 text-xl font-bold ${
-                      plan.highlighted ? 'text-white' : 'text-slate-900'
-                    }`}
-                  >
+                  <h3 className="mb-2 text-xl font-bold text-slate-900">
                     {plan.name}
                   </h3>
-                  <p
-                    className={`text-sm ${
-                      plan.highlighted ? 'text-slate-300' : 'text-slate-600'
-                    }`}
-                  >
+                  <p className="text-sm text-slate-600">
                     {plan.description}
                   </p>
                 </div>
 
                 <div className="relative z-10 mb-6 flex items-baseline gap-2">
-                  <span
-                    className={`text-4xl font-extrabold md:text-5xl ${
-                      plan.highlighted ? 'text-white' : 'text-slate-900'
-                    }`}
-                  >
+                  <span className="text-4xl font-extrabold text-slate-900 md:text-5xl">
                     {plan.price}
                   </span>
                   {plan.priceNote && (
-                    <span
-                      className={`text-sm ${
-                        plan.highlighted ? 'text-slate-400' : 'text-slate-500'
-                      }`}
-                    >
+                    <span className="text-sm text-slate-500">
                       {plan.priceNote}
                     </span>
                   )}
                 </div>
 
-                <div
-                  className={`relative z-10 mb-6 h-px w-full ${
-                    plan.highlighted ? 'bg-white/10' : 'bg-slate-200'
-                  }`}
-                />
+                <div className="relative z-10 mb-6 h-px w-full bg-slate-200" />
 
                 <ul className="relative z-10 mb-8 flex-1 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle2
                         size={18}
-                        className={`mt-0.5 shrink-0 ${
-                          plan.highlighted ? 'text-blue-400' : 'text-blue-600'
-                        }`}
+                        className="mt-0.5 shrink-0 text-blue-600"
                       />
-                      <span
-                        className={`text-sm ${
-                          plan.highlighted ? 'text-slate-300' : 'text-slate-700'
-                        }`}
-                      >
+                      <span className="text-sm text-slate-700">
                         {feature}
                       </span>
                     </li>
@@ -598,7 +497,7 @@ export default function ServiceDetailPage() {
                   to="/contact"
                   className={`relative z-10 inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-300 ${
                     plan.highlighted
-                      ? 'border border-white/15 bg-white/10 text-white backdrop-blur-md hover:bg-white/20'
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20'
                       : 'bg-slate-900 text-white hover:bg-blue-600'
                   }`}
                 >
