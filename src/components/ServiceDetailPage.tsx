@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
+import { gsap } from 'gsap';
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,12 +12,226 @@ import {
   Wrench,
   Sparkles,
   Tag,
+  Zap,
+  Star,
+  Cpu,
+  Globe2,
 } from 'lucide-react';
 import { getServiceBySlug } from '../data/servicesData';
 
 export default function ServiceDetailPage() {
   const { serviceSlug } = useParams();
   const service = getServiceBySlug(serviceSlug || '');
+
+  const heroRef = useRef<HTMLElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!service) return;
+
+    const ctx = gsap.context(() => {
+      /* ---------- ENTRANCE TIMELINE ---------- */
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      tl.from('.hero-back-btn', { y: -20, opacity: 0, duration: 0.5 })
+        .from('.hero-tag', { y: 20, opacity: 0, duration: 0.5 }, '-=0.2')
+        .from('.hero-title', { y: 40, opacity: 0, duration: 0.8 }, '-=0.3')
+        .from('.hero-desc', { y: 25, opacity: 0, duration: 0.7 }, '-=0.5')
+        .from(
+          '.hero-feature-pill',
+          { y: 20, opacity: 0, scale: 0.9, duration: 0.5, stagger: 0.08 },
+          '-=0.4',
+        )
+        .from(
+          '.hero-card',
+          { x: 60, opacity: 0, scale: 0.9, duration: 0.9, ease: 'power4.out' },
+          '-=0.9',
+        )
+        .from(
+          '.hero-card-row',
+          { y: 20, opacity: 0, duration: 0.5, stagger: 0.15 },
+          '-=0.5',
+        )
+        .from(
+          '.hero-icon-wrap',
+          { scale: 0, rotation: -180, opacity: 0, duration: 0.9, ease: 'back.out(1.7)' },
+          '-=0.7',
+        );
+
+      /* ---------- FLOATING BLOBS ---------- */
+      gsap.to('.hero-blob-1', {
+        x: 50,
+        y: -30,
+        scale: 1.15,
+        duration: 7,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+      gsap.to('.hero-blob-2', {
+        x: -40,
+        y: 40,
+        scale: 1.1,
+        duration: 9,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+      gsap.to('.hero-blob-3', {
+        x: 30,
+        y: -40,
+        scale: 0.9,
+        duration: 8,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+
+      /* ---------- ORBITING ICONS ---------- */
+      gsap.to('.orbit-ring-1', {
+        rotation: 360,
+        duration: 18,
+        ease: 'none',
+        repeat: -1,
+        transformOrigin: '50% 50%',
+      });
+      gsap.to('.orbit-ring-2', {
+        rotation: -360,
+        duration: 24,
+        ease: 'none',
+        repeat: -1,
+        transformOrigin: '50% 50%',
+      });
+
+      /* ---------- COUNTER-ROTATE the icons so they stay upright ---------- */
+      gsap.to('.orbit-icon', {
+        rotation: -360,
+        duration: 18,
+        ease: 'none',
+        repeat: -1,
+        transformOrigin: '50% 50%',
+      });
+
+      /* ---------- FLOATING SPARKLES ---------- */
+      gsap.utils.toArray<HTMLElement>('.hero-spark').forEach((el, i) => {
+        gsap.to(el, {
+          y: '-=20',
+          x: i % 2 === 0 ? '+=10' : '-=10',
+          opacity: 0.3,
+          duration: 2 + Math.random() * 2,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.2,
+        });
+      });
+
+      /* ---------- ICON GENTLE FLOAT ---------- */
+      gsap.to('.hero-icon-wrap', {
+        y: -10,
+        duration: 2.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+
+      /* ---------- GLOW PULSE BEHIND ICON ---------- */
+      gsap.to('.icon-glow', {
+        scale: 1.2,
+        opacity: 0.6,
+        duration: 2,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+
+      /* ---------- 3D TILT ON THE CARD ---------- */
+      const card = cardRef.current;
+      if (card) {
+        const handleMove = (e: MouseEvent) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const rotY = ((x - rect.width / 2) / rect.width) * 14;
+          const rotX = -((y - rect.height / 2) / rect.height) * 14;
+          gsap.to(card, {
+            rotationY: rotY,
+            rotationX: rotX,
+            transformPerspective: 900,
+            duration: 0.5,
+            ease: 'power2.out',
+          });
+        };
+        const handleLeave = () => {
+          gsap.to(card, {
+            rotationY: 0,
+            rotationX: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+          });
+        };
+        card.addEventListener('mousemove', handleMove);
+        card.addEventListener('mouseleave', handleLeave);
+        return () => {
+          card.removeEventListener('mousemove', handleMove);
+          card.removeEventListener('mouseleave', handleLeave);
+        };
+      }
+    }, heroRef);
+
+    /* ---------- OPTION B (HIGHLIGHTED) PRICING CARD ANIMATIONS ---------- */
+    const pricingCtx = gsap.context(() => {
+      // Floating blobs (Hero style)
+      gsap.to('.opt-b-blob-1', {
+        x: 20,
+        y: 15,
+        scale: 1.1,
+        duration: 4,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+      gsap.to('.opt-b-blob-2', {
+        x: -20,
+        y: -15,
+        scale: 1.1,
+        duration: 5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+
+      // Floating sparkles (Hero style)
+      gsap.utils.toArray<HTMLElement>('.opt-b-spark').forEach((el, i) => {
+        gsap.to(el, {
+          y: '-=15',
+          opacity: 0.2,
+          duration: 2 + Math.random() * 2,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.3,
+        });
+      });
+
+      // Card entrance
+      if (document.querySelector('.option-b-card')) {
+        gsap.from('.option-b-card', {
+          scale: 0.9,
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: 0.2,
+        });
+      }
+    });
+
+    return () => {
+      ctx.revert();
+      pricingCtx.revert();
+    };
+  }, [service]);
 
   if (!service) {
     return <Navigate to="/services" replace />;
@@ -25,17 +241,44 @@ export default function ServiceDetailPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 pt-24 pb-16 md:pt-32 md:pb-24">
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 pt-24 pb-16 md:pt-32 md:pb-24"
+      >
+        {/* Animated gradient blobs */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-0 top-12 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="absolute right-0 top-20 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
-          <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
+          <div className="hero-blob-1 absolute left-0 top-12 h-64 w-64 rounded-full bg-blue-500/30 blur-3xl" />
+          <div className="hero-blob-2 absolute right-0 top-20 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
+          <div className="hero-blob-3 absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-cyan-500/20 blur-3xl" />
+        </div>
+
+        {/* Decorative SVG grid */}
+        <svg
+          className="absolute inset-0 -z-10 h-full w-full stroke-white/[0.06] [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"
+          aria-hidden="true"
+        >
+          <defs>
+            <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M.5 60V.5H60" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hero-grid)" />
+        </svg>
+
+        {/* Floating sparkles */}
+        <div className="pointer-events-none absolute inset-0 -z-10 hidden md:block">
+          <Sparkles className="hero-spark absolute left-[8%] top-[20%] text-blue-300/60" size={18} />
+          <Star className="hero-spark absolute left-[20%] top-[70%] text-purple-300/60" size={14} />
+          <Sparkles className="hero-spark absolute right-[10%] top-[28%] text-cyan-300/60" size={20} />
+          <Star className="hero-spark absolute right-[28%] top-[78%] text-pink-300/60" size={12} />
+          <Zap className="hero-spark absolute left-[42%] top-[15%] text-yellow-300/60" size={16} />
+          <Sparkles className="hero-spark absolute right-[40%] bottom-[18%] text-blue-300/60" size={14} />
         </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link
             to="/services"
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-md transition hover:bg-white/15 hover:text-white"
+            className="hero-back-btn mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-md transition hover:bg-white/15 hover:text-white"
           >
             <ArrowLeft size={16} />
             Back to Services
@@ -43,14 +286,16 @@ export default function ServiceDetailPage() {
 
           <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white/80 backdrop-blur-md">
+              <div className="hero-tag mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white/80 backdrop-blur-md">
                 <Rocket size={15} className="text-blue-300" />
                 Premium Service Details
               </div>
-              <h1 className="mb-6 text-4xl font-extrabold leading-tight text-white md:text-6xl">
-                {service.title}
+              <h1 className="hero-title mb-6 text-4xl font-extrabold leading-tight md:text-6xl">
+                <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                  {service.title}
+                </span>
               </h1>
-              <p className="max-w-3xl text-base leading-8 text-slate-300 md:text-lg">
+              <p className="hero-desc max-w-3xl text-base leading-8 text-slate-300 md:text-lg">
                 {service.heroDescription}
               </p>
 
@@ -58,7 +303,7 @@ export default function ServiceDetailPage() {
                 {service.features.map((feature) => (
                   <span
                     key={feature}
-                    className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white/85 backdrop-blur-md"
+                    className="hero-feature-pill rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white/85 backdrop-blur-md transition hover:border-blue-300/40 hover:bg-white/15"
                   >
                     {feature}
                   </span>
@@ -66,19 +311,64 @@ export default function ServiceDetailPage() {
               </div>
             </div>
 
+            {/* Right-side animated card */}
             <div className="relative">
-              <div className="rounded-[2rem] border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
-                <div className={`mx-auto flex h-28 w-28 items-center justify-center rounded-3xl ${service.color}`}>
-                  <Icon className={service.iconColor} size={50} />
-                </div>
-                <div className="mt-8 space-y-4">
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-5 text-white/90">
-                    <div className="text-sm text-slate-400">Starting Focus</div>
-                    <div className="mt-1 text-lg font-semibold">Performance, quality, and business results</div>
+              {/* Orbiting rings (decorative) */}
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div className="orbit-ring-1 relative h-[360px] w-[360px] rounded-full border border-dashed border-white/10">
+                  <div className="orbit-icon absolute -top-3 left-1/2 -translate-x-1/2 rounded-xl border border-white/15 bg-white/10 p-2 backdrop-blur-md">
+                    <Zap className="text-yellow-300" size={16} />
                   </div>
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/50 p-5 text-white/90">
-                    <div className="text-sm text-slate-400">Service Coverage</div>
-                    <div className="mt-1 text-lg font-semibold">Planning, implementation, launch, and support</div>
+                  <div className="orbit-icon absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-xl border border-white/15 bg-white/10 p-2 backdrop-blur-md">
+                    <Star className="text-pink-300" size={16} />
+                  </div>
+                </div>
+                <div className="orbit-ring-2 absolute h-[280px] w-[280px] rounded-full border border-dashed border-white/10">
+                  <div className="orbit-icon absolute top-1/2 -left-3 -translate-y-1/2 rounded-xl border border-white/15 bg-white/10 p-2 backdrop-blur-md">
+                    <Cpu className="text-blue-300" size={16} />
+                  </div>
+                  <div className="orbit-icon absolute top-1/2 -right-3 -translate-y-1/2 rounded-xl border border-white/15 bg-white/10 p-2 backdrop-blur-md">
+                    <Globe2 className="text-cyan-300" size={16} />
+                  </div>
+                </div>
+              </div>
+
+              <div
+                ref={cardRef}
+                className="hero-card relative rounded-[2rem] border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <div className="relative mx-auto h-28 w-28">
+                  {/* Glow */}
+                  <div
+                    className={`icon-glow absolute inset-0 rounded-3xl ${service.color} opacity-50 blur-2xl`}
+                  />
+                  {/* Icon container */}
+                  <div
+                    className={`hero-icon-wrap relative mx-auto flex h-28 w-28 items-center justify-center rounded-3xl ${service.color} shadow-xl ring-1 ring-white/40`}
+                  >
+                    <Icon className={service.iconColor} size={50} />
+                  </div>
+                </div>
+
+                <div className="mt-8 space-y-4">
+                  <div className="hero-card-row group rounded-2xl border border-white/10 bg-slate-900/50 p-5 text-white/90 transition hover:border-blue-400/40 hover:bg-slate-900/70">
+                    <div className="flex items-center gap-2 text-sm text-slate-400">
+                      <Sparkles size={14} className="text-blue-300" />
+                      Starting Focus
+                    </div>
+                    <div className="mt-1 text-lg font-semibold">
+                      Performance, quality, and business results
+                    </div>
+                  </div>
+                  <div className="hero-card-row group rounded-2xl border border-white/10 bg-slate-900/50 p-5 text-white/90 transition hover:border-purple-400/40 hover:bg-slate-900/70">
+                    <div className="flex items-center gap-2 text-sm text-slate-400">
+                      <Rocket size={14} className="text-purple-300" />
+                      Service Coverage
+                    </div>
+                    <div className="mt-1 text-lg font-semibold">
+                      Planning, implementation, launch, and support
+                    </div>
                   </div>
                 </div>
               </div>
@@ -195,26 +485,54 @@ export default function ServiceDetailPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 pt-6 md:grid-cols-2 lg:grid-cols-3">
             {service.pricing.map((plan) => (
               <div
                 key={plan.name}
-                className={`relative flex flex-col rounded-3xl border-2 p-6 md:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
+                className={`pricing-card relative flex flex-col rounded-3xl border-2 p-6 md:p-8 transition-all duration-500 ${
                   plan.highlighted
-                    ? 'border-blue-600 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-xl shadow-blue-200'
-                    : 'border-slate-200 bg-white text-slate-900 shadow-sm'
+                    ? 'option-b-card z-10 overflow-hidden border-white/10 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white shadow-2xl shadow-blue-900/40 lg:-mt-4 lg:scale-105 hover:lg:scale-110'
+                    : 'border-slate-200 bg-white text-slate-900 shadow-sm hover:-translate-y-2 hover:shadow-2xl'
                 }`}
               >
+                {/* ===== HERO-STYLE GRAPHICS FOR OPTION B ===== */}
                 {plan.highlighted && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <div className="flex items-center gap-1 rounded-full bg-yellow-400 px-4 py-1.5 text-xs font-bold text-slate-900 shadow-lg">
-                      <Sparkles size={12} />
-                      MOST POPULAR
+                  <>
+                    {/* Background Blobs */}
+                    <div className="pointer-events-none absolute inset-0 -z-10">
+                      <div className="opt-b-blob-1 absolute -left-10 -top-10 h-40 w-40 rounded-full bg-blue-500/30 blur-3xl" />
+                      <div className="opt-b-blob-2 absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-purple-500/30 blur-3xl" />
+                    </div>
+
+                    {/* Decorative SVG grid */}
+                    <svg
+                      className="pointer-events-none absolute inset-0 -z-10 h-full w-full stroke-white/[0.06] [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"
+                      aria-hidden="true"
+                    >
+                      <rect width="100%" height="100%" fill="url(#hero-grid)" />
+                    </svg>
+
+                    {/* Floating sparkles */}
+                    <div className="pointer-events-none absolute inset-0 -z-10">
+                      <Sparkles className="opt-b-spark absolute left-[15%] top-[15%] text-blue-300/60" size={14} />
+                      <Star className="opt-b-spark absolute right-[20%] top-[30%] text-purple-300/60" size={10} />
+                      <Zap className="opt-b-spark absolute left-[25%] bottom-[20%] text-yellow-300/60" size={12} />
+                      <Sparkles className="opt-b-spark absolute right-[15%] bottom-[30%] text-cyan-300/60" size={14} />
+                    </div>
+                  </>
+                )}
+
+                {/* Badge */}
+                {plan.highlighted && (
+                  <div className="absolute -top-5 left-1/2 z-20 -translate-x-1/2">
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md shadow-xl">
+                      <Rocket size={14} className="text-blue-300" />
+                      Most Popular
                     </div>
                   </div>
                 )}
 
-                <div className="mb-6">
+                <div className="relative z-10 mb-6">
                   <h3
                     className={`mb-2 text-xl font-bold ${
                       plan.highlighted ? 'text-white' : 'text-slate-900'
@@ -224,14 +542,14 @@ export default function ServiceDetailPage() {
                   </h3>
                   <p
                     className={`text-sm ${
-                      plan.highlighted ? 'text-white/80' : 'text-slate-600'
+                      plan.highlighted ? 'text-slate-300' : 'text-slate-600'
                     }`}
                   >
                     {plan.description}
                   </p>
                 </div>
 
-                <div className="mb-6 flex items-baseline gap-2">
+                <div className="relative z-10 mb-6 flex items-baseline gap-2">
                   <span
                     className={`text-4xl font-extrabold md:text-5xl ${
                       plan.highlighted ? 'text-white' : 'text-slate-900'
@@ -242,7 +560,7 @@ export default function ServiceDetailPage() {
                   {plan.priceNote && (
                     <span
                       className={`text-sm ${
-                        plan.highlighted ? 'text-white/70' : 'text-slate-500'
+                        plan.highlighted ? 'text-slate-400' : 'text-slate-500'
                       }`}
                     >
                       {plan.priceNote}
@@ -251,23 +569,23 @@ export default function ServiceDetailPage() {
                 </div>
 
                 <div
-                  className={`mb-6 h-px w-full ${
-                    plan.highlighted ? 'bg-white/20' : 'bg-slate-200'
+                  className={`relative z-10 mb-6 h-px w-full ${
+                    plan.highlighted ? 'bg-white/10' : 'bg-slate-200'
                   }`}
                 />
 
-                <ul className="mb-8 flex-1 space-y-3">
+                <ul className="relative z-10 mb-8 flex-1 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle2
                         size={18}
                         className={`mt-0.5 shrink-0 ${
-                          plan.highlighted ? 'text-yellow-300' : 'text-blue-600'
+                          plan.highlighted ? 'text-blue-400' : 'text-blue-600'
                         }`}
                       />
                       <span
                         className={`text-sm ${
-                          plan.highlighted ? 'text-white/90' : 'text-slate-700'
+                          plan.highlighted ? 'text-slate-300' : 'text-slate-700'
                         }`}
                       >
                         {feature}
@@ -278,9 +596,9 @@ export default function ServiceDetailPage() {
 
                 <Link
                   to="/contact"
-                  className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-300 ${
+                  className={`relative z-10 inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-300 ${
                     plan.highlighted
-                      ? 'bg-white text-blue-700 hover:bg-yellow-300 hover:text-slate-900'
+                      ? 'border border-white/15 bg-white/10 text-white backdrop-blur-md hover:bg-white/20'
                       : 'bg-slate-900 text-white hover:bg-blue-600'
                   }`}
                 >
