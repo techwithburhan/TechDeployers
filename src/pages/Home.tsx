@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
 import VideoTestimonials from '../components/VideoTestimonials';
+import { Clock, Calendar } from 'lucide-react';
 // import { 
 //   Code2, Smartphone, Cloud, Zap, ArrowRight 
 // } from 'lucide-react';
@@ -11,27 +12,10 @@ import {
   Shield, Rocket, Cpu   // ✅ ADD THIS
 } from 'lucide-react';
 
-// 1. IMPORT YOUR NEW COMPONENT HERE
-// Make sure the path matches where you saved Capabilities.jsx
 import Capabilities from '../components/Capabilities'; 
+import { blogPosts } from '../data/blogData';
 
 gsap.registerPlugin(ScrollTrigger);
-
-// Custom SVG Icon Components for Hero Section
-// const ShopifyIcon = () => (
-//   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-//     <path d="M17 7H7C5.89543 7 5 7.89543 5 9V17C5 18.1046 5.89543 19 7 19H17C18.1046 19 19 18.1046 19 17V9C19 7.89543 18.1046 7 17 7Z" stroke="currentColor" strokeWidth="2"/>
-//     <path d="M7 11H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-//     <path d="M9 15H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-//     <path d="M12 7V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-//   </svg>
-// );
-
-// const AWSIcon = () => (
-//   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-//     <path d="M17.5 19C19.9853 19 22 16.9853 22 14.5C22 12.0147 19.9853 10 17.5 10C17.0132 10 16.5546 10.0763 16.143 10.2114C15.3766 8.40553 13.7186 7.21143 11.75 7.21143C9.19115 7.21143 7 9.40258 7 12C7 14.5974 9.19115 16.7886 11.75 16.7886C12.3726 16.7886 12.9642 16.6837 13.5125 16.4841C14.092 17.849 15.4136 18.8114 17.0125 18.8114H17.5V19Z" stroke="currentColor" strokeWidth="2"/>
-//   </svg>
-// );
 
 const Home = () => {
   const containerRef = useRef(null);
@@ -187,7 +171,76 @@ const Home = () => {
           </div>
         </div>
       </section>
+<section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+              <p className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-2">From Our Blog</p>
+              <h2 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight">
+                Latest Insights &<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">
+                  Industry Updates
+                </span>
+              </h2>
+            </div>
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-slate-900 text-slate-900 rounded-2xl font-bold hover:bg-slate-900 hover:text-white transition-all shrink-0"
+            >
+              View All Articles
+              <ArrowRight size={18} />
+            </Link>
+          </div>
 
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogPosts.slice(0, 3).map((post) => (
+              <Link
+                key={post.slug}
+                to={`/blog/${post.slug}`}
+                className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 hover:border-blue-200 transition-all duration-500 flex flex-col"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={post.coverImage}
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <span className={`absolute bottom-3 left-4 px-3 py-1 rounded-full text-xs font-bold ${post.categoryColor}`}>
+                    {post.category}
+                  </span>
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="font-bold text-slate-900 text-lg leading-snug mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 flex-1 mb-4">
+                    {post.excerpt}
+                  </p>
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+                        {post.authorAvatar}
+                      </div>
+                      <p className="text-xs font-semibold text-slate-700">{post.author}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                      <div className="flex items-center gap-1">
+                        <Calendar size={11} />
+                        {post.date.split(' ').slice(0, 2).join(' ')}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock size={11} />
+                        {post.readTime}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* --- FINAL CTA --- */}
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 text-center">
