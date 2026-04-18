@@ -202,7 +202,8 @@ const Home = () => {
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={post.coverImage}
-                    alt={post.title}
+                    alt={`${post.title} - ${post.category} article by TechDeployers`}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -241,6 +242,123 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* --- SEO OVERVIEW: CLOUD, DEVOPS & WEB DEVELOPMENT --- */}
+      <section className="py-24 bg-slate-50" aria-labelledby="services-overview-heading">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <header className="mb-12 text-center">
+              <p className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-2">
+                IT Services Built for Growth
+              </p>
+              <h2
+                id="services-overview-heading"
+                className="text-3xl md:text-5xl font-black text-slate-900 leading-tight"
+              >
+                Cloud, DevOps & Web Development Solutions for Modern Businesses
+              </h2>
+            </header>
+
+            <div className="space-y-12 text-slate-700 text-lg leading-relaxed">
+              <p>
+                TechDeployers is a full-service IT partner helping startups and enterprises
+                modernize with reliable{' '}
+                <Link to="/services" className="text-blue-600 font-semibold hover:underline">
+                  cloud services
+                </Link>
+                , automated DevOps pipelines, and production-grade web development. Our team
+                blends strategy, engineering, and design to deliver software that is fast,
+                secure, and built to scale.
+              </p>
+
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  AWS Cloud Services That Scale
+                </h3>
+                <p className="mb-4">
+                  We design and operate secure, cost-efficient cloud infrastructure on Amazon Web
+                  Services. From migrations to greenfield architectures, our AWS solutions give
+                  you the resilience and elasticity modern products demand.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Cloud migration and architecture reviews for AWS workloads</li>
+                  <li>High-availability deployments across multiple regions and availability zones</li>
+                  <li>Cost optimization, monitoring, and security hardening</li>
+                  <li>Serverless, containerized, and hybrid cloud solutions</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  DevOps Services & Automation
+                </h3>
+                <p className="mb-4">
+                  Our DevOps services help engineering teams ship faster with confidence. We
+                  build CI/CD pipelines, infrastructure as code, and observability platforms
+                  that reduce manual effort and prevent production incidents.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>CI/CD pipelines with GitHub Actions, GitLab, and Jenkins</li>
+                  <li>Infrastructure as Code using Terraform and AWS CloudFormation</li>
+                  <li>Kubernetes, Docker, and container orchestration</li>
+                  <li>Centralized logging, monitoring, and on-call playbooks</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Custom Web Development
+                </h3>
+                <p className="mb-4">
+                  We build accessible, SEO-friendly websites and web applications with React,
+                  Next.js, Node.js, and TypeScript. Every project is engineered for Core Web
+                  Vitals, security, and long-term maintainability.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Single-page apps, marketing sites, and enterprise portals</li>
+                  <li>Headless commerce on Shopify and modern JAMstack frameworks</li>
+                  <li>API design, third-party integrations, and backend development</li>
+                  <li>Performance audits and accessibility improvements</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Why Businesses Choose TechDeployers
+                </h3>
+                <p className="mb-4">
+                  We combine senior engineering talent with a delivery process refined across
+                  hundreds of projects. Whether you are launching a new product, modernizing a
+                  legacy system, or scaling an existing platform, we work as a transparent
+                  extension of your team.
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Clear roadmaps with weekly progress check-ins</li>
+                  <li>Security-first engineering from day one</li>
+                  <li>Performance budgets and measurable business outcomes</li>
+                  <li>Flexible engagement models that match your stage of growth</li>
+                </ul>
+              </div>
+
+              <p>
+                Explore the full range of our{' '}
+                <Link to="/services" className="text-blue-600 font-semibold hover:underline">
+                  IT services
+                </Link>
+                , learn more{' '}
+                <Link to="/about" className="text-blue-600 font-semibold hover:underline">
+                  about our team
+                </Link>
+                , or{' '}
+                <Link to="/contact" className="text-blue-600 font-semibold hover:underline">
+                  contact us
+                </Link>{' '}
+                for a free consultation on your next cloud, DevOps, or web development project.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* --- FINAL CTA --- */}
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 text-center">
