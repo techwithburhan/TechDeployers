@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
+import VideoTestimonials from '../components/VideoTestimonials';
 // import { 
 //   Code2, Smartphone, Cloud, Zap, ArrowRight 
 // } from 'lucide-react';
@@ -126,7 +127,8 @@ const Home = () => {
           ))}
         </div>
       </div>
-
+  {/* ── VIDEO TESTIMONIALS ── */}
+      <VideoTestimonials />
       {/* --- CAPABILITIES SECTION (REPLACED OLD SERVICES) --- */}
       <Capabilities />
 
