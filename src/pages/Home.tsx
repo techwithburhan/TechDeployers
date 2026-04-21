@@ -51,7 +51,7 @@ const Home = () => {
           <div className="hero-content space-y-8 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-md border border-slate-200 px-4 py-2 rounded-full text-sm font-bold text-blue-600 shadow-sm">
               <Zap size={16} fill="currentColor" />
-              <span>The Future of Digital Engineering</span>
+              <span>Afreen Anasari</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1]">
               Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Digital Excellence.</span>
